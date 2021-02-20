@@ -132,16 +132,16 @@ public class QuoteServiceImpl
                         quotes.get(quotes.size() - 1).getDate()) > 0) { // Last quote is before the expected end date
                 Date lastQuoteDate = quotes.get(quotes.size() - 1).getDate();
 
-                long requestedTimeRange = Math.abs(from.getTime() - lastQuoteDate.getTime());
-                List<Quote> requestedQuotes = this.getQuoteByRange(symbol, requestedTimeRange);
+                long requestedTimeRange = Math.abs(from.getTime() - lastQuoteDate.getTime()) + 5;
+                List<Quote> currentQuotes = this.getQuoteByRange(symbol, requestedTimeRange);
 
-                if (requestedQuotes.size() > 0 &&
-                        requestedQuotes.get(requestedQuotes.size() - 1).getDate().compareTo(lastQuoteDate) > 0) {
+                if (currentQuotes.size() > 0 &&
+                        currentQuotes.get(currentQuotes.size() - 1).getDate().compareTo(lastQuoteDate) > 0) {
                     List<Quote> quotesToAdd = new ArrayList<>();
 
-                    for (int i = 0; i < requestedQuotes.size(); i++) {
-                        if (requestedQuotes.get(i).getDate().compareTo(lastQuoteDate) > 0) {
-                            quotesToAdd.add(requestedQuotes.get(i));
+                    for (int i = 0; i < currentQuotes.size(); i++) {
+                        if (currentQuotes.get(i).getDate().compareTo(lastQuoteDate) > 0) {
+                            quotesToAdd.add(currentQuotes.get(i));
                         }
                     }
 
