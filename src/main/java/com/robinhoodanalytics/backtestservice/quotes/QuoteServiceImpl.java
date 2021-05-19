@@ -145,20 +145,36 @@ public class QuoteServiceImpl
                         }
                     }
 
-                    log.info("Added {} new quotes", quotesToAdd.size());
+                    log.info("Appending {} new quotes", quotesToAdd.size());
 
-                    quoteRepo.saveAll(quotesToAdd);
+                    if (quotes.size() > 0) {
+                        quoteRepo.saveAll(quotesToAdd);
+                    } else {
+                        return deleteAddGet(symbol, diff, start, end);
+                    }
                 }
+
                 List<Quote> reretrieveQuotes = quoteRepo.findBySymbolAndDateBetween(symbol, start, end);
+                if (reretrieveQuotes.size() > 0) {
+                    log.info("Retrieving {} to {}", reretrieveQuotes.get(0), reretrieveQuotes.get(reretrieveQuotes.size() - 1));
+                } else {
+                    log.info("No quotes found");
+                    return deleteAddGet(symbol, diff, start, end);
+                }
                 return reretrieveQuotes;
             } else {
-                List<Quote> allQuotes = quoteRepo.findBySymbol(symbol);
-
-                quoteRepo.deleteAll(allQuotes);
-                addQuotes(symbol, diff);
-                return quoteRepo.findBySymbolAndDateBetween(symbol, start, end);
+                return deleteAddGet(symbol, diff, start, end);
             }
         }
+    }
+
+    private List<Quote> deleteAddGet(String symbol, long diff, Date start, Date end) {
+        List<Quote> allQuotes = quoteRepo.findBySymbol(symbol);
+
+        quoteRepo.deleteAll(allQuotes);
+        addQuotes(symbol, diff);
+
+        return quoteRepo.findBySymbolAndDateBetween(symbol, start, end);
     }
 
     private List<Quote> getQuoteByRange(String symbol, long timeRange) {
