@@ -2,6 +2,7 @@
 Data accessor and backtesting microservice. Add on for backtesting in Robinhood-algorithmic-trading-in-angular app
 
 # Install
+Install set up Java 8
 Install and set up MongoDB 3.6
 Run ```gradle build```
 
